@@ -48,6 +48,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         mapView.settings.compassButton = true
         mapView.settings.myLocationButton = true
         view = mapView
+        setupLocationManager()
         
         // Creates a marker in the center of the map.
         let marker = GMSMarker()
@@ -60,11 +61,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     func revGeocording(coordinate: CLLocationCoordinate2D)
     {
         let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
-        var geocoder = CLGeocoder()
-        geocoder.reverseGeocodeLocation(location, completionHandler: { (placemarks:[AnyObject]!, error:NSError!)
-            if (error == nil && placemarks.count > 0) {
-                let placemark = placemarks[0] as CLPlacemark
-            } else if (error == nil && placemarks.count == 0) {
+        CLGeocoder().reverseGeocodeLocation(location, completionHandler: {(placemarks, error)->Void in
+            if (error == nil && placemarks!.count > 0) {
+                let placemark = placemarks![0] as CLPlacemark
+                var currentCity = ""
+                
+                if placemark.locality != nil {
+                    currentCity = placemark.locality!
+                    print(currentCity)
+                }
+            } else if (error == nil && placemarks!.count == 0) {
                 
             } else if (error != nil) {
                 
