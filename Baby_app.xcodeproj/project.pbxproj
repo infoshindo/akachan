@@ -10,6 +10,8 @@
 		36E353C31BFC742A37F430A0 /* libPods-Baby_appUITests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D1BF5CDAEA8103EA850EAA1 /* libPods-Baby_appUITests.a */; };
 		758B477019C0F39567F179D7 /* libPods-Baby_app.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C419763EDB56C7CBCBA838A /* libPods-Baby_app.a */; };
 		8808129E2C8E77A8DD1D1481 /* libPods-Baby_appTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E03E54CA07D5451172EAB976 /* libPods-Baby_appTests.a */; };
+		E844EB5F1FCD5FE0005B082A /* SwiftyJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E844EB5D1FCD5FE0005B082A /* SwiftyJSON.framework */; };
+		E844EB601FCD5FE0005B082A /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E844EB5E1FCD5FE0005B082A /* Alamofire.framework */; };
 		E87642521FA87F2500594E1D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E87642511FA87F2500594E1D /* AppDelegate.swift */; };
 		E87642541FA87F2500594E1D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E87642531FA87F2500594E1D /* ViewController.swift */; };
 		E87642571FA87F2500594E1D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E87642551FA87F2500594E1D /* Main.storyboard */; };
@@ -46,6 +48,8 @@
 		9907EC8D94864F13EE1F5DB7 /* Pods-Baby_app.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Baby_app.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Baby_app/Pods-Baby_app.debug.xcconfig"; sourceTree = "<group>"; };
 		9C419763EDB56C7CBCBA838A /* libPods-Baby_app.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Baby_app.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E03E54CA07D5451172EAB976 /* libPods-Baby_appTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Baby_appTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E844EB5D1FCD5FE0005B082A /* SwiftyJSON.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyJSON.framework; path = Carthage/Build/iOS/SwiftyJSON.framework; sourceTree = "<group>"; };
+		E844EB5E1FCD5FE0005B082A /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
 		E876424E1FA87F2500594E1D /* Baby_app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Baby_app.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E87642511FA87F2500594E1D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E87642531FA87F2500594E1D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -68,6 +72,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E844EB5F1FCD5FE0005B082A /* SwiftyJSON.framework in Frameworks */,
+				E844EB601FCD5FE0005B082A /* Alamofire.framework in Frameworks */,
 				E8D548671FB1B123000E4964 /* CoreLocation.framework in Frameworks */,
 				758B477019C0F39567F179D7 /* libPods-Baby_app.a in Frameworks */,
 			);
@@ -95,6 +101,8 @@
 		2CE5EBD057851AFB9EB71523 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E844EB5E1FCD5FE0005B082A /* Alamofire.framework */,
+				E844EB5D1FCD5FE0005B082A /* SwiftyJSON.framework */,
 				E8D548661FB1B123000E4964 /* CoreLocation.framework */,
 				9C419763EDB56C7CBCBA838A /* libPods-Baby_app.a */,
 				E03E54CA07D5451172EAB976 /* libPods-Baby_appTests.a */,
@@ -182,6 +190,7 @@
 				E876424C1FA87F2500594E1D /* Resources */,
 				B70E4590F21A48F4BBBC9CE2 /* [CP] Embed Pods Frameworks */,
 				D25A2163774B94C286F7155E /* [CP] Copy Pods Resources */,
+				E844EB611FCD5FFB005B082A /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -461,6 +470,21 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Baby_appUITests/Pods-Baby_appUITests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		E844EB611FCD5FFB005B082A /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/Alamofire.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/SwiftyJSON.framework",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -637,6 +661,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = Baby_app/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.remcorp.Baby-app";
@@ -652,6 +680,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = Baby_app/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.remcorp.Baby-app";
