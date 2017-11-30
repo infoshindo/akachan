@@ -11,16 +11,29 @@ import GoogleMaps
 import GooglePlaces
 import CoreLocation
 
-class ViewController: UIViewController, CLLocationManagerDelegate {
+class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDelegate {
 
     var locationManager: CLLocationManager!
+    let infoMarker = GMSMarker()
     
     override func loadView() {
         super.loadView()
         setupLocationManager()
-
+        
     }
-
+    
+    func mapView(_ mapView:GMSMapView, didTapPOIWithPlaceID placeID:String,
+                 name:String, location:CLLocationCoordinate2D) {
+        print("You tapped \(name): \(placeID), \(location.latitude)/\(location.longitude)")
+        
+        infoMarker.snippet = placeID
+        infoMarker.position = location
+        infoMarker.title = name
+        infoMarker.opacity = 0;
+        infoMarker.infoWindowAnchor.y = 1
+        infoMarker.map = mapView
+        mapView.selectedMarker = infoMarker
+    }
     
     func setupLocationManager() {
         locationManager = CLLocationManager()
@@ -48,7 +61,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         mapView.settings.compassButton = true
         mapView.settings.myLocationButton = true
         view = mapView
-        setupLocationManager()
+//        setupLocationManager()
         
         // Creates a marker in the center of the map.
         let marker = GMSMarker()
@@ -56,6 +69,21 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         marker.title = "Tokyo"
         marker.snippet = "Japan"
         marker.map = mapView
+        
+        
+        let position = CLLocationCoordinate2D(latitude:35.700707, longitude: 139.775183)
+        let akiba = GMSMarker(position: position)
+        akiba.title = "秋葉原"
+        akiba.snippet = "あああああ"
+        akiba.map = mapView
+        
+        
+        _ = GMSCameraPosition.camera(withLatitude:47.603,
+                                              longitude:-122.331,
+                                              zoom:14)
+        _ = GMSMapView.map(withFrame: .zero, camera: camera)
+        mapView.delegate = self
+        self.view = mapView
     }
 
     func revGeocording(coordinate: CLLocationCoordinate2D)
