@@ -61,7 +61,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         mapView.settings.compassButton = true
         mapView.settings.myLocationButton = true
         view = mapView
-        revGeocording(latitude: now_latitude!, longitude: now_longitude!)
+        getArticles(latitude: now_latitude!, longitude: now_longitude!)
 
         // Creates a marker in the center of the map.
         let marker = GMSMarker()
@@ -85,37 +85,18 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         mapView.delegate = self
         self.view = mapView
     }
-
-    func revGeocording(latitude: Double, longitude: Double)
-    {
-        let cur = CLLocation(latitude: latitude, longitude: longitude)
-        CLGeocoder().reverseGeocodeLocation(cur, completionHandler: {(placemarks, error) -> Void in
-            if (error == nil && placemarks!.count > 0) {
-                let placemark = placemarks![0] as CLPlacemark
-                var currentCity = ""
-                
-                if placemark.locality != nil {
-                    currentCity = placemark.locality!
-                    self.getArticles(currentcity: currentCity)
-                }
-            } else if (error == nil && placemarks!.count == 0) {
-                
-            } else if (error != nil) {
-                
-            }
-        })
-    }
     
-    func getArticles(currentcity: String) {
-        Alamofire.request("http://akachan.northbay.biz/town", method: .get, parameters: ["town_name": currentcity])
+    func getArticles(latitude: Double, longitude: Double) {
+        Alamofire.request("http://akachan.northbay.biz/town/", method: .get, parameters: ["town_name": "台東区"])
+//        Alamofire.request("http://akachan.northbay.biz/town/", method: .get, parameters: ["town_name": latitude,"town_name": longitude])
                  .responseJSON{ response in
-                    print(response.result)
-//                    let json = JSON(response.result.value)
-//                    json["info"].forEach{(_, data) in
-//                        let type = data["type"].string!
-//                        print(type)
-//                    }
-        }
+                    let json = response.result.value
+//                    print("JSON: \(json)")
+                    
+                    json.forEach{(_, data) in
+                        self.items.append(data)
+                    }
+                }
     }
 
 }

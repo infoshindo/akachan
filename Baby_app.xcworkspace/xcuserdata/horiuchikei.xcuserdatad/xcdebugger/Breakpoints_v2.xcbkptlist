@@ -10,7 +10,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Baby_app/ViewController.swift"
-            timestampString = "533555606.541794"
+            timestampString = "534397899.460466"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "10"
@@ -26,12 +26,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Baby_app/ViewController.swift"
-            timestampString = "533555606.543309"
+            timestampString = "534397899.461007"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "45"
             endingLineNumber = "45"
-            landmarkName = "locationManager(_:didUpdateLocations:)"
+            landmarkName = "setupLocationManager()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -42,7 +42,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Baby_app/ViewController.swift"
-            timestampString = "533555606.543888"
+            timestampString = "534397899.461278"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "22"
