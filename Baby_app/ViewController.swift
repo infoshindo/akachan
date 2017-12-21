@@ -87,15 +87,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
     }
     
     func getArticles(latitude: Double, longitude: Double) {
-        Alamofire.request("http://akachan.northbay.biz/town/", method: .get, parameters: ["town_name": "台東区"])
-//        Alamofire.request("http://akachan.northbay.biz/town/", method: .get, parameters: ["town_name": latitude,"town_name": longitude])
+        Alamofire.request("http://akachan.northbay.biz/town/", method: .get, parameters: ["town_name": latitude,"town_name": longitude])
                  .responseJSON{ response in
                     let json = response.result.value
-//                    print("JSON: \(json)")
+                    print("JSON: \(String(describing: json))")
                     
-                    json.forEach{(_, data) in
-                        self.items.append(data)
-                    }
+//                    json.forEach{(_, data) in
+//                        self.items.append(data)
+//                    }
                 }
     }
 
