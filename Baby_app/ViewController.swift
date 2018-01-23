@@ -25,7 +25,25 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
     
     func mapView(_ mapView:GMSMapView, didTapPOIWithPlaceID placeID:String,
                  name:String, location:CLLocationCoordinate2D) {
-        print("You tapped \(name): \(placeID), \(location.latitude)/\(location.longitude)")
+//        print("You tapped \(name): \(placeID), \(location.latitude)/\(location.longitude)")
+        
+        let button = UIButton()
+        button.setTitle("この施設をみんなに共有する", for: .normal)
+        button.setTitleColor(UIColor.red, for: .normal)
+        button.backgroundColor = UIColor.white
+        button.layer.cornerRadius = 5.0
+        button.layer.masksToBounds = true
+        button.sizeToFit()
+//        button.center = self.view.center
+        button.layer.position = CGPoint(x: self.view.frame.width/2, y: self.view.frame.height - 40)
+        button.addTarget(self, action: #selector(ViewController.onClickMyButton(sender: )), for: .touchUpInside)
+        self.view.addSubview(button)
+        
+        // 施設情報をUserDefaultsへ保存する
+        let ud = UserDefaults.standard
+        ud.set(location.latitude, forKey: "lat")
+        ud.set(location.longitude, forKey: "long")
+        ud.set(name, forKey: "name")
         
         infoMarker.snippet = placeID
         infoMarker.position = location
@@ -34,6 +52,18 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         infoMarker.infoWindowAnchor.y = 1
         infoMarker.map = mapView
         mapView.selectedMarker = infoMarker
+    }
+    
+    @objc func onClickMyButton(sender: UIButton) {
+        let storyboard: UIStoryboard = self.storyboard!
+        let nextView = storyboard.instantiateViewController(withIdentifier: "CreateFacility")
+        present(nextView, animated: true, completion: nil)
+        
+//        let ud = UserDefaults.standard
+//        print(ud.string(forKey: "name"))
+//        print(ud.string(forKey: "lat"))
+//        print(ud.string(forKey: "long"))
+        
     }
     
     func setupLocationManager() {
@@ -93,9 +123,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
                     let json = response.result.value
 //                    print("JSON: \(json)")
                     
-                    json.forEach{(_, data) in
-                        self.items.append(data)
-                    }
+//                    json.forEach{(_, data) in
+//                        self.items.append(data)
+//                    }
                 }
     }
 
