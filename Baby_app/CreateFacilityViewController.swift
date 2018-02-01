@@ -10,8 +10,17 @@ import UIKit
 
 class CreateFacilityViewController: UIViewController {
 
+    @IBOutlet weak var facilityLabel: UILabel!
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // UserDefaultsの値を取得
+        let ud = UserDefaults.standard
+        let name = ud.string(forKey: "name")
+        facilityLabel.text = name
+        print(ud.string(forKey: "name"))
+        print(ud.string(forKey: "lat"))
+        print(ud.string(forKey: "long"))
 
         // Do any additional setup after loading the view.
     }
@@ -21,7 +30,21 @@ class CreateFacilityViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
+        for touch: UITouch in touches {
+            let tag = touch.view!.tag
+            print(tag)
+            if tag == 1 {
+                dismiss(animated: true, completion: nil)
+            }
+        }
+    }
+    
+    @IBAction func closeButton(_ sender: Any) {
+        dismiss(animated: true, completion: nil)
+    }
+    
     /*
     // MARK: - Navigation
 

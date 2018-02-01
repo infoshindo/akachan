@@ -28,7 +28,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
 //        print("You tapped \(name): \(placeID), \(location.latitude)/\(location.longitude)")
         
         let button = UIButton()
-        button.setTitle("この施設をみんなに共有する", for: .normal)
+        button.setTitle("この施設をオススメする", for: .normal)
         button.setTitleColor(UIColor.red, for: .normal)
         button.backgroundColor = UIColor.white
         button.layer.cornerRadius = 5.0
@@ -55,9 +55,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
     }
     
     @objc func onClickMyButton(sender: UIButton) {
-        let storyboard: UIStoryboard = self.storyboard!
-        let nextView = storyboard.instantiateViewController(withIdentifier: "CreateFacility")
-        present(nextView, animated: true, completion: nil)
+        performSegue(withIdentifier: "modal", sender: nil)
+        
+        
+//        let storyboard: UIStoryboard = self.storyboard!
+//        let nextView = storyboard.instantiateViewController(withIdentifier: "CreateFacility")
+//        present(nextView, animated: true, completion: nil)
         
 //        let ud = UserDefaults.standard
 //        print(ud.string(forKey: "name"))
