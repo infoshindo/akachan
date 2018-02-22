@@ -25,7 +25,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
 
     func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
 print("You tapped")
-        
+
         let button = UIButton()
         button.setTitle("この施設をオススメする", for: .normal)
         button.setTitleColor(UIColor.red, for: .normal)
@@ -36,13 +36,12 @@ print("You tapped")
         button.layer.position = CGPoint(x: self.view.frame.width/2, y: self.view.frame.height - 40)
         button.addTarget(self, action: #selector(ViewController.onClickMyButton(sender: )), for: .touchUpInside)
         self.view.addSubview(button)
-        
+
         // 施設情報をUserDefaultsへ保存する
         let ud = UserDefaults.standard
         ud.set(marker.title!, forKey: "name")
-        
-        infoMarker.snippet = placeID
-        infoMarker.position = location
+
+        infoMarker.snippet = marker.snippet!
         infoMarker.title = marker.title!
         infoMarker.opacity = 0;
         infoMarker.infoWindowAnchor.y = 1
@@ -51,25 +50,25 @@ print("You tapped")
         return false
     }
 
-//    func () -> UIView? {
-//        let view = UIView(frame: CGRect.init(x: 0, y: 0, width: 300, height: 300))
-//        view.backgroundColor = UIColor.white
-//        view.layer.cornerRadius = 6
-//
-//        let lbl1 = UILabel(frame: CGRect.init(x: 8, y: 8, width: view.frame.size.width - 16, height: 15))
-//        lbl1.text = marker.title!
-//        view.addSubview(lbl1)
-//
-//        let lbl2 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x, y: lbl1.frame.origin.y + lbl1.frame.size.height + 3, width: view.frame.size.width - 16, height: 15))
-//        lbl2.text = marker.snippet!
-//        lbl2.font = UIFont.systemFont(ofSize: 14, weight: .light)
-//        view.addSubview(lbl2)
-//
-//        let lbl3 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x, y: lbl1.frame.origin.y + lbl1.frame.size.height + lbl2.frame.size.height + 5, width: view.frame.size.width - 16, height: 15))
-//        lbl3.text = ""
-//        lbl3.font = UIFont.systemFont(ofSize: 14, weight: .light)
-//        view.addSubview(lbl3)
-//
+    func mapView(_ mapView: GMSMapView, markerInfoContents marker: GMSMarker) -> UIView? {
+        let view = UIView(frame: CGRect.init(x: 0, y: 0, width: 300, height: 300))
+        view.backgroundColor = UIColor.white
+        view.layer.cornerRadius = 6
+
+        let lbl1 = UILabel(frame: CGRect.init(x: 8, y: 8, width: view.frame.size.width - 16, height: 15))
+        lbl1.text = marker.title!
+        view.addSubview(lbl1)
+
+        let lbl2 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x, y: lbl1.frame.origin.y + lbl1.frame.size.height + 3, width: view.frame.size.width - 16, height: 15))
+        lbl2.text = marker.snippet!
+        lbl2.font = UIFont.systemFont(ofSize: 14, weight: .light)
+        view.addSubview(lbl2)
+
+        let lbl3 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x, y: lbl1.frame.origin.y + lbl1.frame.size.height + lbl2.frame.size.height + 5, width: view.frame.size.width - 16, height: 15))
+        lbl3.text = ""
+        lbl3.font = UIFont.systemFont(ofSize: 14, weight: .light)
+        view.addSubview(lbl3)
+
 //        let lbl4: UITextField = UITextField()
 //        lbl4.frame = CGRect.init(x: lbl1.frame.origin.x, y: lbl1.frame.origin.y + lbl1.frame.size.height + lbl2.frame.size.height + lbl3.frame.size.height + 5, width: view.frame.size.width - 16, height: 90)
 //        lbl4.text = "口コミを入力してください"
@@ -82,9 +81,9 @@ print("You tapped")
 //        lbl5.text = "この施設の評価を送信する"
 //        lbl5.font = UIFont.systemFont(ofSize: 14, weight: .light)
 //        view.addSubview(lbl5)
-//
-//        return view
-//    }
+
+        return view
+    }
 
     
     @objc func onClickMyButton(sender: UIButton) {

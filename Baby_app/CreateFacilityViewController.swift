@@ -19,8 +19,6 @@ class CreateFacilityViewController: UIViewController {
         let name = ud.string(forKey: "name")
         facilityLabel.text = name
         print(ud.string(forKey: "name"))
-        print(ud.string(forKey: "lat"))
-        print(ud.string(forKey: "long"))
 
         // Do any additional setup after loading the view.
     }
