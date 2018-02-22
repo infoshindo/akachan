@@ -22,10 +22,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         super.loadView()
         setupLocationManager()
     }
-    
-    func mapView(_ mapView:GMSMapView, didTapPOIWithPlaceID placeID:String,
-                 name:String, location:CLLocationCoordinate2D) {
-        //        print("You tapped \(name): \(placeID), \(location.latitude)/\(location.longitude)")
+
+    func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
+print("You tapped")
         
         let button = UIButton()
         button.setTitle("この施設をオススメする", for: .normal)
@@ -34,39 +33,62 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         button.layer.cornerRadius = 5.0
         button.layer.masksToBounds = true
         button.sizeToFit()
-        //        button.center = self.view.center
         button.layer.position = CGPoint(x: self.view.frame.width/2, y: self.view.frame.height - 40)
         button.addTarget(self, action: #selector(ViewController.onClickMyButton(sender: )), for: .touchUpInside)
         self.view.addSubview(button)
         
         // 施設情報をUserDefaultsへ保存する
         let ud = UserDefaults.standard
-        ud.set(location.latitude, forKey: "lat")
-        ud.set(location.longitude, forKey: "long")
-        ud.set(name, forKey: "name")
+        ud.set(marker.title!, forKey: "name")
         
         infoMarker.snippet = placeID
         infoMarker.position = location
-        infoMarker.title = name
+        infoMarker.title = marker.title!
         infoMarker.opacity = 0;
         infoMarker.infoWindowAnchor.y = 1
         infoMarker.map = mapView
         mapView.selectedMarker = infoMarker
+        return false
     }
+
+//    func () -> UIView? {
+//        let view = UIView(frame: CGRect.init(x: 0, y: 0, width: 300, height: 300))
+//        view.backgroundColor = UIColor.white
+//        view.layer.cornerRadius = 6
+//
+//        let lbl1 = UILabel(frame: CGRect.init(x: 8, y: 8, width: view.frame.size.width - 16, height: 15))
+//        lbl1.text = marker.title!
+//        view.addSubview(lbl1)
+//
+//        let lbl2 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x, y: lbl1.frame.origin.y + lbl1.frame.size.height + 3, width: view.frame.size.width - 16, height: 15))
+//        lbl2.text = marker.snippet!
+//        lbl2.font = UIFont.systemFont(ofSize: 14, weight: .light)
+//        view.addSubview(lbl2)
+//
+//        let lbl3 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x, y: lbl1.frame.origin.y + lbl1.frame.size.height + lbl2.frame.size.height + 5, width: view.frame.size.width - 16, height: 15))
+//        lbl3.text = ""
+//        lbl3.font = UIFont.systemFont(ofSize: 14, weight: .light)
+//        view.addSubview(lbl3)
+//
+//        let lbl4: UITextField = UITextField()
+//        lbl4.frame = CGRect.init(x: lbl1.frame.origin.x, y: lbl1.frame.origin.y + lbl1.frame.size.height + lbl2.frame.size.height + lbl3.frame.size.height + 5, width: view.frame.size.width - 16, height: 90)
+//        lbl4.text = "口コミを入力してください"
+//        lbl4.font = UIFont.systemFont(ofSize: 14, weight: .light)
+//        lbl4.layer.borderColor = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0).cgColor
+//        lbl4.layer.borderWidth = 1
+//        view.addSubview(lbl4)
+//
+//        let lbl5 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x, y: lbl1.frame.origin.y + lbl1.frame.size.height + lbl2.frame.size.height + lbl3.frame.size.height + lbl4.frame.size.height + 5, width: view.frame.size.width - 16, height: 15))
+//        lbl5.text = "この施設の評価を送信する"
+//        lbl5.font = UIFont.systemFont(ofSize: 14, weight: .light)
+//        view.addSubview(lbl5)
+//
+//        return view
+//    }
+
     
     @objc func onClickMyButton(sender: UIButton) {
         performSegue(withIdentifier: "modal", sender: nil)
-        
-        
-//        let storyboard: UIStoryboard = self.storyboard!
-//        let nextView = storyboard.instantiateViewController(withIdentifier: "CreateFacility")
-//        present(nextView, animated: true, completion: nil)
-        
-        //        let ud = UserDefaults.standard
-        //        print(ud.string(forKey: "name"))
-        //        print(ud.string(forKey: "lat"))
-        //        print(ud.string(forKey: "long"))
-        
     }
     
     func setupLocationManager() {
@@ -77,7 +99,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         let status = CLLocationManager.authorizationStatus()
         if status == .authorizedWhenInUse {
             locationManager.delegate = self
-            locationManager.distanceFilter = 10
+            locationManager.distanceFilter = 1000
             locationManager.startUpdatingLocation()
         }
     }
@@ -93,26 +115,20 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         mapView.isMyLocationEnabled = true
         mapView.settings.compassButton = true
         mapView.settings.myLocationButton = true
+        mapView.delegate = self
         view = mapView
         getArticles(latitude: now_latitude!, longitude: now_longitude!) { response in
             response.forEach{(_, data) in
                 let map_data = data as AnyObject?
                 let map_position = CLLocationCoordinate2D(latitude: atof(map_data?["latitude"] as! String), longitude: atof(map_data?["longitude"] as! String))
                 let spots = GMSMarker(position: map_position)
-                spots.title = map_data?["title"] as! String
-                spots.snippet = map_data?["snippet"] as! String
+                spots.title = map_data?["title"] as? String
+                spots.snippet = map_data?["snippet"] as? String
                 spots.map = mapView
+
             }
             
         }
-        
-        // Creates a marker in the center of the map.
-        let position = CLLocationCoordinate2D(latitude:35.700707, longitude: 139.775183)
-        let akiba = GMSMarker(position: position)
-        akiba.title = "秋葉原"
-        akiba.snippet = "あああああ"
-        akiba.map = mapView
-        
         
         _ = GMSCameraPosition.camera(withLatitude:47.603,
                                      longitude:-122.331,
@@ -141,7 +157,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
                 apiResponse(spots_dictionary)
         }
     }
-    
 }
 
 
