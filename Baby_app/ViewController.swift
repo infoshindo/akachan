@@ -24,8 +24,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
     }
 
     func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
-print("You tapped")
-
         let button = UIButton()
         button.setTitle("この施設をオススメする", for: .normal)
         button.setTitleColor(UIColor.red, for: .normal)
@@ -37,9 +35,23 @@ print("You tapped")
         button.addTarget(self, action: #selector(ViewController.onClickMyButton(sender: )), for: .touchUpInside)
         self.view.addSubview(button)
 
+        let facility = JSON(marker.userData as Any)
+
         // 施設情報をUserDefaultsへ保存する
         let ud = UserDefaults.standard
         ud.set(marker.title!, forKey: "name")
+        ud.set(facility["facility_id"].string, forKey: "id")
+
+        if (facility["comment"] != nil)
+        {
+            var evalues: [Int] = []
+            facility["comment"].forEach{(arg) in
+                let (_, comment) = arg
+                evalues.append(Int(comment["comment_value"].string!)!)
+            }
+            var evalue = evalues.reduce(0, +) / Int(evalues.count)
+            ud.set(evalue, forKey: "evalue")
+        }
 
         infoMarker.snippet = marker.snippet!
         infoMarker.title = marker.title!
@@ -55,33 +67,59 @@ print("You tapped")
         view.backgroundColor = UIColor.white
         view.layer.cornerRadius = 6
 
+        let facility = JSON(marker.userData as Any)
+        print(facility)
+        if (facility == "unknown") {
+            return nil;
+        }
+        
         let lbl1 = UILabel(frame: CGRect.init(x: 8, y: 8, width: view.frame.size.width - 16, height: 15))
-        lbl1.text = marker.title!
+        //        lbl1.text = marker.title!
+        lbl1.text = facility["facility_name"].string
         view.addSubview(lbl1)
-
+        
         let lbl2 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x, y: lbl1.frame.origin.y + lbl1.frame.size.height + 3, width: view.frame.size.width - 16, height: 15))
-        lbl2.text = marker.snippet!
+        //        lbl2.text = marker.snippet!
+        lbl2.text = facility["facility_possible_time"].string
         lbl2.font = UIFont.systemFont(ofSize: 14, weight: .light)
         view.addSubview(lbl2)
-
+        
         let lbl3 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x, y: lbl1.frame.origin.y + lbl1.frame.size.height + lbl2.frame.size.height + 5, width: view.frame.size.width - 16, height: 15))
-        lbl3.text = ""
+        lbl3.text = facility["facility_possible_day"].string
         lbl3.font = UIFont.systemFont(ofSize: 14, weight: .light)
+        lbl3.numberOfLines = 0
+        lbl3.sizeToFit()
         view.addSubview(lbl3)
-
-//        let lbl4: UITextField = UITextField()
-//        lbl4.frame = CGRect.init(x: lbl1.frame.origin.x, y: lbl1.frame.origin.y + lbl1.frame.size.height + lbl2.frame.size.height + lbl3.frame.size.height + 5, width: view.frame.size.width - 16, height: 90)
-//        lbl4.text = "口コミを入力してください"
-//        lbl4.font = UIFont.systemFont(ofSize: 14, weight: .light)
-//        lbl4.layer.borderColor = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0).cgColor
-//        lbl4.layer.borderWidth = 1
-//        view.addSubview(lbl4)
-//
-//        let lbl5 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x, y: lbl1.frame.origin.y + lbl1.frame.size.height + lbl2.frame.size.height + lbl3.frame.size.height + lbl4.frame.size.height + 5, width: view.frame.size.width - 16, height: 15))
-//        lbl5.text = "この施設の評価を送信する"
-//        lbl5.font = UIFont.systemFont(ofSize: 14, weight: .light)
-//        view.addSubview(lbl5)
-
+        
+//        var rect: CGSize = lbl3.sizeThatFits(CGSize(width: frame.width, height: CGFloat.greatestFiniteMagnitude))
+        
+        let lbl4 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x, y: lbl1.frame.origin.y + lbl1.frame.size.height + lbl3.frame.size.height + 25, width: view.frame.size.width - 16, height: 15))
+        lbl4.text = facility["facility_station"].string
+        lbl4.font = UIFont.systemFont(ofSize: 14, weight: .light)
+        lbl4.numberOfLines = 0
+        lbl4.sizeToFit()
+        view.addSubview(lbl4)
+        
+        let lbl5 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x, y: lbl1.frame.origin.y + lbl1.frame.size.height + lbl4.frame.size.height + 30, width: view.frame.size.width - 16, height: 15))
+        lbl5.text = facility["facility_url"].string
+        lbl5.font = UIFont.systemFont(ofSize: 14, weight: .light)
+        lbl5.numberOfLines = 0
+        lbl5.sizeToFit()
+        view.addSubview(lbl5)
+        
+        //        let lbl4: UITextField = UITextField()
+        //        lbl4.frame = CGRect.init(x: lbl1.frame.origin.x, y: lbl1.frame.origin.y + lbl1.frame.size.height + lbl2.frame.size.height + lbl3.frame.size.height + 5, width: view.frame.size.width - 16, height: 90)
+        //        lbl4.text = facility["facility_possible_day"].string
+        //        lbl4.font = UIFont.systemFont(ofSize: 14, weight: .light)
+        //        lbl4.layer.borderColor = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0).cgColor
+        //        lbl4.layer.borderWidth = 1
+        //        view.addSubview(lbl4)
+        //
+        //        let lbl5 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x, y: lbl1.frame.origin.y + lbl1.frame.size.height + lbl2.frame.size.height + lbl3.frame.size.height + lbl4.frame.size.height + 5, width: view.frame.size.width - 16, height: 15))
+        //        lbl5.text = "この施設の評価を送信する"
+        //        lbl5.font = UIFont.systemFont(ofSize: 14, weight: .light)
+        //        view.addSubview(lbl5)
+        
         return view
     }
 
@@ -123,8 +161,8 @@ print("You tapped")
                 let spots = GMSMarker(position: map_position)
                 spots.title = map_data?["title"] as? String
                 spots.snippet = map_data?["snippet"] as? String
+                spots.userData = map_data!["userData"] as Any
                 spots.map = mapView
-
             }
             
         }
@@ -144,13 +182,12 @@ print("You tapped")
                 var spots_dictionary:[String:Any] = [:]
                 
                 json["data"].forEach{(_, data) in
-                    var spot:[String:String] = [:]
-                    
+                    var spot:[String:Any] = [:]
                     spot["title"] = data["facility_name"].string!
                     spot["snippet"] = data["facility_remark"].string!
                     spot["latitude"] = data["facility_lat"].string!
                     spot["longitude"] = data["facility_lng"].string!
-                    
+                    spot["userData"] = data
                     spots_dictionary[data["facility_name"].string!] = spot
                 }
                 apiResponse(spots_dictionary)
