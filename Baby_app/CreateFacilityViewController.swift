@@ -9,6 +9,9 @@
 import UIKit
 import Alamofire
 import SwiftyJSON
+import GoogleMaps
+import GooglePlaces
+import CoreLocation
 
 class CreateFacilityViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, UITextFieldDelegate {
 
@@ -114,9 +117,10 @@ class CreateFacilityViewController: UIViewController, UIPickerViewDelegate, UIPi
         Alamofire.request("http://pasgroup:rem3shs3days@akachan.northbay.biz/regist_info", parameters: ["facility_id": facility_id,"comment_detail": commentString,"comment_value": evalueString])
             .responseJSON{ response in
             }
+        let parentVC = presentingViewController as! ViewController
+        parentVC.updateMap()
         dismiss(animated: true, completion: nil)
-//        loadView()
-//        viewDidLoad()
+
     }
 
     func numberOfComponents(in pickerView: UIPickerView) -> Int {

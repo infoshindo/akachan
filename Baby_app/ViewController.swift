@@ -63,7 +63,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
                     comment_details.append(comment["comment_detail"].string!)
                 }
             }
-            evalue = evalues.reduce(0, +) / Int(evalues.count)
+            if(!evalues.isEmpty)
+            {
+                evalue = evalues.reduce(0, +) / Int(evalues.count)
+            }
             
         }
         ud.set(comment_details, forKey: "comment_details")
@@ -210,6 +213,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
                 }
                 apiResponse(spots_dictionary)
         }
+    }
+
+    func updateMap() {
+        print("来てます")
+        loadView()
+        viewDidLoad()
     }
 }
 
