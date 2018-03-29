@@ -22,26 +22,29 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         super.loadView()
         setupLocationManager()
     }
-
+    
     func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
         let button = UIButton()
         button.setTitle("この施設をオススメする", for: .normal)
-        button.setTitleColor(UIColor.red, for: .normal)
+        button.setTitleColor(UIColor.blue, for: .normal)
         button.backgroundColor = UIColor.white
+        button.layer.borderColor = UIColor.blue.cgColor
+        button.layer.borderWidth = 1.0
         button.layer.cornerRadius = 5.0
         button.layer.masksToBounds = true
         button.sizeToFit()
+        button.frame = CGRect(x: self.view.frame.width/2, y: self.view.frame.height - 40, width: 220, height: 40)
         button.layer.position = CGPoint(x: self.view.frame.width/2, y: self.view.frame.height - 40)
         button.addTarget(self, action: #selector(ViewController.onClickMyButton(sender: )), for: .touchUpInside)
         self.view.addSubview(button)
 
+        
         let facilitydata = JSON(marker.userData as Any)
 
         // 施設情報をUserDefaultsへ保存する
         let ud = UserDefaults.standard
         ud.set(marker.title!, forKey: "name")
         ud.set(facilitydata["facility_id"].string, forKey: "id")
-print(facilitydata)
 
         var evalue = 0
         var comment_details: [String] = []
@@ -50,6 +53,7 @@ print(facilitydata)
             var evalues: [Int] = []
             facilitydata["comment"].forEach{(arg) in
                 let (_, comment) = arg
+
                 if(comment["comment_value"] != nil)
                 {
                     evalues.append(Int(comment["comment_value"].string!)!)
@@ -64,7 +68,7 @@ print(facilitydata)
         }
         ud.set(comment_details, forKey: "comment_details")
         ud.set(evalue, forKey: "evalue")
-
+        
         infoMarker.snippet = marker.snippet!
         infoMarker.title = marker.title!
         infoMarker.opacity = 0;
@@ -73,12 +77,13 @@ print(facilitydata)
         mapView.selectedMarker = infoMarker
         return false
     }
-
+    
     func mapView(_ mapView: GMSMapView, markerInfoContents marker: GMSMarker) -> UIView? {
-        let view = UIView(frame: CGRect.init(x: 0, y: 0, width: 300, height: 300))
+        let view = UIView(frame: CGRect.init(x: 0, y: 0, width: 300, height: 200))
         view.backgroundColor = UIColor.white
         view.layer.cornerRadius = 6
-
+        //        view.frame.size.height = 5
+        
         let facility = JSON(marker.userData as Any)
 
         if (facility == "unknown") {
@@ -86,55 +91,56 @@ print(facilitydata)
         }
         
         let lbl1 = UILabel(frame: CGRect.init(x: 8, y: 8, width: view.frame.size.width - 16, height: 15))
-        //        lbl1.text = marker.title!
         lbl1.text = facility["facility_name"].string
+        lbl1.sizeToFit()
         view.addSubview(lbl1)
         
-        let lbl2 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x, y: lbl1.frame.origin.y + lbl1.frame.size.height + 3, width: view.frame.size.width - 16, height: 15))
-        //        lbl2.text = marker.snippet!
-        lbl2.text = facility["facility_possible_time"].string
+        // 営業時間
+        let lbl2 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x, y: lbl1.frame.origin.y + lbl1.frame.size.height + 10, width: view.frame.size.width - 16, height: 15))
+        
+        if facility["facility_possible_time"].string != nil {
+            lbl2.text = "[営業時間] " + facility["facility_possible_time"].string!
+        }
+        
         lbl2.font = UIFont.systemFont(ofSize: 14, weight: .light)
+        lbl2.sizeToFit()
         view.addSubview(lbl2)
         
-        let lbl3 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x, y: lbl1.frame.origin.y + lbl1.frame.size.height + lbl2.frame.size.height + 5, width: view.frame.size.width - 16, height: 15))
-        lbl3.text = facility["facility_possible_day"].string
+        // 営業日
+        let lbl3 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x, y: lbl1.frame.origin.y + lbl1.frame.size.height + lbl2.frame.size.height + 17, width: view.frame.size.width - 16, height: 15))
+        if facility["facility_possible_day"].string != nil {
+            lbl3.text = "[営業日] " + facility["facility_possible_day"].string!
+        }
         lbl3.font = UIFont.systemFont(ofSize: 14, weight: .light)
         lbl3.numberOfLines = 0
         lbl3.sizeToFit()
         view.addSubview(lbl3)
         
-//        var rect: CGSize = lbl3.sizeThatFits(CGSize(width: frame.width, height: CGFloat.greatestFiniteMagnitude))
-        
-        let lbl4 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x, y: lbl1.frame.origin.y + lbl1.frame.size.height + lbl3.frame.size.height + 25, width: view.frame.size.width - 16, height: 15))
-        lbl4.text = facility["facility_station"].string
+        // サイトURL
+        let lbl4 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x, y: lbl1.frame.origin.y + lbl1.frame.size.height + lbl2.frame.size.height + lbl3.frame.size.height + 21, width: view.frame.size.width - 16, height: 15))
+        if facility["facility_url"].string != nil {
+            lbl4.text = "[URL] " + facility["facility_url"].string!
+        }
         lbl4.font = UIFont.systemFont(ofSize: 14, weight: .light)
         lbl4.numberOfLines = 0
         lbl4.sizeToFit()
         view.addSubview(lbl4)
         
-        let lbl5 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x, y: lbl1.frame.origin.y + lbl1.frame.size.height + lbl4.frame.size.height + 30, width: view.frame.size.width - 16, height: 15))
-        lbl5.text = facility["facility_url"].string
+        // 最寄駅
+        let lbl5 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x, y: lbl1.frame.origin.y + lbl1.frame.size.height + lbl2.frame.size.height + lbl3.frame.size.height + lbl4.frame.size.height + 26, width: view.frame.size.width - 16, height: 15))
+        if facility["facility_station"].string != nil {
+            lbl5.text = "[最寄駅] " + facility["facility_station"].string!
+        }
         lbl5.font = UIFont.systemFont(ofSize: 14, weight: .light)
         lbl5.numberOfLines = 0
         lbl5.sizeToFit()
         view.addSubview(lbl5)
         
-        //        let lbl4: UITextField = UITextField()
-        //        lbl4.frame = CGRect.init(x: lbl1.frame.origin.x, y: lbl1.frame.origin.y + lbl1.frame.size.height + lbl2.frame.size.height + lbl3.frame.size.height + 5, width: view.frame.size.width - 16, height: 90)
-        //        lbl4.text = facility["facility_possible_day"].string
-        //        lbl4.font = UIFont.systemFont(ofSize: 14, weight: .light)
-        //        lbl4.layer.borderColor = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0).cgColor
-        //        lbl4.layer.borderWidth = 1
-        //        view.addSubview(lbl4)
-        //
-        //        let lbl5 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x, y: lbl1.frame.origin.y + lbl1.frame.size.height + lbl2.frame.size.height + lbl3.frame.size.height + lbl4.frame.size.height + 5, width: view.frame.size.width - 16, height: 15))
-        //        lbl5.text = "この施設の評価を送信する"
-        //        lbl5.font = UIFont.systemFont(ofSize: 14, weight: .light)
-        //        view.addSubview(lbl5)
+        let view_height = lbl1.frame.size.height + lbl2.frame.size.height + lbl3.frame.size.height + lbl4.frame.size.height + lbl5.frame.size.height
+        view.frame.size.height = view_height + 50
         
         return view
     }
-
     
     @objc func onClickMyButton(sender: UIButton) {
         performSegue(withIdentifier: "modal", sender: nil)
