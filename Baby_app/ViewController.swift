@@ -13,7 +13,7 @@ import CoreLocation
 import Alamofire
 import SwiftyJSON
 
-class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDelegate {
+class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDelegate, UITextFieldDelegate {
     
     var locationManager: CLLocationManager!
     let infoMarker = GMSMarker()
@@ -35,23 +35,35 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         button.addTarget(self, action: #selector(ViewController.onClickMyButton(sender: )), for: .touchUpInside)
         self.view.addSubview(button)
 
-        let facility = JSON(marker.userData as Any)
+        let facilitydata = JSON(marker.userData as Any)
 
         // 施設情報をUserDefaultsへ保存する
         let ud = UserDefaults.standard
         ud.set(marker.title!, forKey: "name")
-        ud.set(facility["facility_id"].string, forKey: "id")
+        ud.set(facilitydata["facility_id"].string, forKey: "id")
+print(facilitydata)
 
-        if (facility["comment"] != nil)
+        var evalue = 0
+        var comment_details: [String] = []
+        if (facilitydata["comment"] != nil)
         {
             var evalues: [Int] = []
-            facility["comment"].forEach{(arg) in
+            facilitydata["comment"].forEach{(arg) in
                 let (_, comment) = arg
-                evalues.append(Int(comment["comment_value"].string!)!)
+                if(comment["comment_value"] != nil)
+                {
+                    evalues.append(Int(comment["comment_value"].string!)!)
+                }
+                if(comment["comment_detail"] != nil)
+                {
+                    comment_details.append(comment["comment_detail"].string!)
+                }
             }
-            var evalue = evalues.reduce(0, +) / Int(evalues.count)
-            ud.set(evalue, forKey: "evalue")
+            evalue = evalues.reduce(0, +) / Int(evalues.count)
+            
         }
+        ud.set(comment_details, forKey: "comment_details")
+        ud.set(evalue, forKey: "evalue")
 
         infoMarker.snippet = marker.snippet!
         infoMarker.title = marker.title!
@@ -68,7 +80,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         view.layer.cornerRadius = 6
 
         let facility = JSON(marker.userData as Any)
-        print(facility)
+
         if (facility == "unknown") {
             return nil;
         }
